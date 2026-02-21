@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Nudge",
   "version": "1.0",
-  "description": "Mindful X usage tracking with real-time metrics and gentle reminders",
+  "description": "X usage tracking with behavioral modification through visual indicators",
   "permissions": [
     "storage"
   ],
