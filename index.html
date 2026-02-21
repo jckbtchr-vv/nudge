@@ -162,6 +162,108 @@
     footer a:hover {
       color: #ffffff;
     }
+
+    .demo-section {
+      background: #111111;
+      border: 1px solid #333333;
+      padding: 40px;
+      margin: 40px 0;
+    }
+
+    .demo-counters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .demo-counter {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+
+    .demo-counter.green {
+      border-color: #00aa00;
+      color: #00aa00;
+    }
+
+    .demo-counter.yellow {
+      border-color: #88aa00;
+      color: #88aa00;
+    }
+
+    .demo-counter.orange {
+      border-color: #ff8800;
+      color: #ff8800;
+    }
+
+    .demo-counter.red {
+      border-color: #ff0000;
+      color: #ff0000;
+    }
+
+    .demo-counter.grey {
+      border-color: #666666;
+      color: #666666;
+    }
+
+    .demo-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .demo-stat-box {
+      background: #111111;
+      border: 1px solid #333333;
+      padding: 16px;
+    }
+
+    .demo-stat-label {
+      font-size: 11px;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .demo-stat-value {
+      font-size: 18px;
+      color: #ffffff;
+    }
+
+    .demo-chart {
+      height: 60px;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      margin-top: 20px;
+    }
+
+    .demo-bar {
+      flex: 1;
+      background: #333333;
+      min-height: 2px;
+      transition: background 0.2s;
+    }
+
+    .demo-bar.active {
+      background: #ffffff;
+    }
+
+    .demo-label {
+      font-size: 10px;
+      color: #666666;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -171,6 +273,61 @@
 
     <a href="https://github.com/jckbtchr-vv/nudge" class="cta">DOWNLOAD</a>
     <a href="https://github.com/jckbtchr-vv/nudge" class="cta secondary">VIEW SOURCE</a>
+
+    <div class="demo-section">
+      <div class="demo-label">VISUAL INDICATORS</div>
+      <div class="demo-counters">
+        <span class="demo-counter green">24</span>
+        <span class="demo-counter green">35</span>
+        <span class="demo-counter yellow">58</span>
+        <span class="demo-counter yellow">73</span>
+        <span class="demo-counter orange">95</span>
+        <span class="demo-counter red">127</span>
+        <span class="demo-counter red">184</span>
+      </div>
+      <p style="margin-top: 20px; font-size: 13px; color: #666666;">Progressive color gradient from green to red as post count increases</p>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">COUNT MODE</div>
+      <div class="demo-counters">
+        <span class="demo-counter grey">24</span>
+        <span class="demo-counter grey">35</span>
+        <span class="demo-counter grey">58</span>
+        <span class="demo-counter grey">73</span>
+        <span class="demo-counter grey">95</span>
+      </div>
+      <p style="margin-top: 20px; font-size: 13px; color: #666666;">Uniform grey indicators for minimal distraction</p>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">STATS DISPLAY</div>
+      <div class="demo-stats">
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">POSTS READ</div>
+          <div class="demo-stat-value">247</div>
+        </div>
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">PX SCROLLED</div>
+          <div class="demo-stat-value">89.2K</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-label">HOURLY ACTIVITY</div>
+      <div class="demo-chart">
+        <div class="demo-bar" style="height: 15%"></div>
+        <div class="demo-bar" style="height: 30%"></div>
+        <div class="demo-bar" style="height: 45%"></div>
+        <div class="demo-bar" style="height: 60%"></div>
+        <div class="demo-bar" style="height: 85%"></div>
+        <div class="demo-bar" style="height: 100%"></div>
+        <div class="demo-bar" style="height: 75%"></div>
+        <div class="demo-bar active" style="height: 50%"></div>
+      </div>
+      <p style="margin-top: 20px; font-size: 13px; color: #666666;">24-hour bar chart showing tweet consumption patterns</p>
+    </div>
 
     <div class="feature-grid">
       <div class="feature">
