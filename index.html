@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nudge - X Usage Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      background: #000000;
+      color: #ffffff;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 40px 0 20px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888888;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #cccccc;
+    }
+
+    ul {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    li {
+      font-size: 14px;
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+      color: #cccccc;
+    }
+
+    li:before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: #666666;
+    }
+
+    .cta {
+      display: inline-block;
+      background: #ffffff;
+      color: #000000;
+      padding: 16px 32px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+
+    .cta:hover {
+      background: #eeeeee;
+    }
+
+    .secondary {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid #333333;
+      margin-left: 12px;
+    }
+
+    .secondary:hover {
+      border-color: #ffffff;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .feature {
+      background: #111111;
+      border: 1px solid #333333;
+      padding: 24px;
+    }
+
+    .feature h3 {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .feature p {
+      font-size: 13px;
+      color: #888888;
+      margin: 0;
+    }
+
+    .stat {
+      display: inline-block;
+      margin-right: 30px;
+      margin-top: 20px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666666;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding-top: 30px;
+      border-top: 1px solid #333333;
+      font-size: 11px;
+      color: #666666;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    footer a {
+      color: #888888;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NUDGE</h1>
+    <p>Chrome extension for X usage tracking and behavioral modification through visual indicators.</p>
+
+    <a href="https://github.com/jckbtchr-vv/nudge" class="cta">DOWNLOAD</a>
+    <a href="https://github.com/jckbtchr-vv/nudge" class="cta secondary">VIEW SOURCE</a>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>TRACKING</h3>
+        <p>Sequential post counting. Pixel scroll measurement. Per-minute logging. Hourly aggregation.</p>
+      </div>
+
+      <div class="feature">
+        <h3>VISUALIZATION</h3>
+        <p>60-minute rolling graph. 24-hour bar chart. 90-day historical archive.</p>
+      </div>
+
+      <div class="feature">
+        <h3>MODES</h3>
+        <p>Nudge: Color gradient indicators. Count: Uniform grey markers.</p>
+      </div>
+
+      <div class="feature">
+        <h3>PRIVACY</h3>
+        <p>Local storage only. No external transmission. No analytics. No tracking.</p>
+      </div>
+    </div>
+
+    <h2>SPECIFICATIONS</h2>
+    <ul>
+      <li>Manifest V3</li>
+      <li>Vanilla JavaScript ES6+</li>
+      <li>SVG rendering</li>
+      <li>chrome.storage.local API</li>
+      <li>Daily reset at midnight UTC</li>
+      <li>Persistent across sessions</li>
+    </ul>
+
+    <h2>INSTALLATION</h2>
+    <ul>
+      <li>Clone repository</li>
+      <li>Navigate to chrome://extensions/</li>
+      <li>Enable Developer mode</li>
+      <li>Load unpacked extension</li>
+      <li>Select directory</li>
+    </ul>
+
+    <footer>
+      BY <a href="https://visualizevalue.com" target="_blank">@VISUALIZEVALUE</a>
+    </footer>
+  </div>
+</body>
+</html>
