@@ -264,6 +264,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+    }
   </style>
 </head>
 <body>
@@ -274,59 +281,61 @@
     <a href="https://github.com/jckbtchr-vv/nudge" class="cta">DOWNLOAD</a>
     <a href="https://github.com/jckbtchr-vv/nudge" class="cta secondary">VIEW SOURCE</a>
 
-    <div class="demo-section">
-      <div class="demo-label">VISUAL INDICATORS</div>
-      <div class="demo-counters">
-        <span class="demo-counter green">24</span>
-        <span class="demo-counter green">35</span>
-        <span class="demo-counter yellow">58</span>
-        <span class="demo-counter yellow">73</span>
-        <span class="demo-counter orange">95</span>
-        <span class="demo-counter red">127</span>
-        <span class="demo-counter red">184</span>
-      </div>
-      <p style="margin-top: 20px; color: #666666;">Progressive color gradient from green to red as post count increases</p>
-    </div>
-
-    <div class="demo-section">
-      <div class="demo-label">COUNT MODE</div>
-      <div class="demo-counters">
-        <span class="demo-counter grey">24</span>
-        <span class="demo-counter grey">35</span>
-        <span class="demo-counter grey">58</span>
-        <span class="demo-counter grey">73</span>
-        <span class="demo-counter grey">95</span>
-      </div>
-      <p style="margin-top: 20px; color: #666666;">Uniform grey indicators for minimal distraction</p>
-    </div>
-
-    <div class="demo-section">
-      <div class="demo-label">STATS DISPLAY</div>
-      <div class="demo-stats">
-        <div class="demo-stat-box">
-          <div class="demo-stat-label">POSTS READ</div>
-          <div class="demo-stat-value">247</div>
+    <div class="demo-grid">
+      <div class="demo-section">
+        <div class="demo-label">VISUAL INDICATORS</div>
+        <div class="demo-counters">
+          <span class="demo-counter green">24</span>
+          <span class="demo-counter green">35</span>
+          <span class="demo-counter yellow">58</span>
+          <span class="demo-counter yellow">73</span>
+          <span class="demo-counter orange">95</span>
+          <span class="demo-counter red">127</span>
+          <span class="demo-counter red">184</span>
         </div>
-        <div class="demo-stat-box">
-          <div class="demo-stat-label">PX SCROLLED</div>
-          <div class="demo-stat-value">89.2K</div>
+        <p style="margin-top: 20px; color: #666666;">Progressive color gradient from green to red as post count increases</p>
+      </div>
+
+      <div class="demo-section">
+        <div class="demo-label">COUNT MODE</div>
+        <div class="demo-counters">
+          <span class="demo-counter grey">24</span>
+          <span class="demo-counter grey">35</span>
+          <span class="demo-counter grey">58</span>
+          <span class="demo-counter grey">73</span>
+          <span class="demo-counter grey">95</span>
+        </div>
+        <p style="margin-top: 20px; color: #666666;">Uniform grey indicators for minimal distraction</p>
+      </div>
+
+      <div class="demo-section">
+        <div class="demo-label">STATS DISPLAY</div>
+        <div class="demo-stats">
+          <div class="demo-stat-box">
+            <div class="demo-stat-label">POSTS READ</div>
+            <div class="demo-stat-value">247</div>
+          </div>
+          <div class="demo-stat-box">
+            <div class="demo-stat-label">PX SCROLLED</div>
+            <div class="demo-stat-value">89.2K</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="demo-section">
-      <div class="demo-label">HOURLY ACTIVITY</div>
-      <div class="demo-chart">
-        <div class="demo-bar" style="height: 15%"></div>
-        <div class="demo-bar" style="height: 30%"></div>
-        <div class="demo-bar" style="height: 45%"></div>
-        <div class="demo-bar" style="height: 60%"></div>
-        <div class="demo-bar" style="height: 85%"></div>
-        <div class="demo-bar" style="height: 100%"></div>
-        <div class="demo-bar" style="height: 75%"></div>
-        <div class="demo-bar active" style="height: 50%"></div>
+      <div class="demo-section">
+        <div class="demo-label">HOURLY ACTIVITY</div>
+        <div class="demo-chart">
+          <div class="demo-bar" style="height: 15%"></div>
+          <div class="demo-bar" style="height: 30%"></div>
+          <div class="demo-bar" style="height: 45%"></div>
+          <div class="demo-bar" style="height: 60%"></div>
+          <div class="demo-bar" style="height: 85%"></div>
+          <div class="demo-bar" style="height: 100%"></div>
+          <div class="demo-bar" style="height: 75%"></div>
+          <div class="demo-bar active" style="height: 50%"></div>
+        </div>
+        <p style="margin-top: 20px; color: #666666;">24-hour bar chart showing tweet consumption patterns</p>
       </div>
-      <p style="margin-top: 20px; color: #666666;">24-hour bar chart showing tweet consumption patterns</p>
     </div>
 
     <div class="feature-grid">
