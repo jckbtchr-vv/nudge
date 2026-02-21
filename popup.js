@@ -165,7 +165,7 @@ function loadHistory() {
     const historyList = document.getElementById('historyList');
 
     if (history.length === 0) {
-      historyList.innerHTML = '<div class="empty-history">No history yet</div>';
+      historyList.innerHTML = '<div class="empty-history">NO HISTORY YET</div>';
       return;
     }
 
@@ -222,7 +222,7 @@ document.getElementById('saveBtn').addEventListener('click', () => {
 
   chrome.storage.local.set({ threshold, mode: activeMode }, () => {
     const status = document.getElementById('status');
-    status.textContent = 'Settings saved!';
+    status.textContent = 'SETTINGS SAVED!';
     setTimeout(() => {
       status.textContent = '';
     }, 2000);
