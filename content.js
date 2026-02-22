@@ -192,7 +192,7 @@ function checkAndUpdatePosts() {
       const minute = now.getMinutes().toString().padStart(2, '0');
       const minuteKey = `${today}T${hour}:${minute}`;
 
-      chrome.storage.local.get(['hourlyData', 'minuteData', 'todayDate'], (result) => {
+      chrome.storage.local.get(['hourlyData', 'minuteData', 'todayDate', 'lifetimeViewedPosts'], (result) => {
         const hourlyData = result.hourlyData || {};
         const minuteData = result.minuteData || {};
 
@@ -202,6 +202,9 @@ function checkAndUpdatePosts() {
 
         // Track per minute
         minuteData[minuteKey] = (minuteData[minuteKey] || 0) + 1;
+
+        // Track lifetime total (THE NUMBER)
+        const lifetimeViewedPosts = (result.lifetimeViewedPosts || 0) + 1;
 
         // Clean old minute data (keep only last 2 hours)
         const twoHoursAgo = Date.now() - (2 * 60 * 60 * 1000);
@@ -213,7 +216,7 @@ function checkAndUpdatePosts() {
         });
 
         // Save count and update reset time if this is the first post
-        const saveData = { viewedPosts, hourlyData, minuteData };
+        const saveData = { viewedPosts, hourlyData, minuteData, lifetimeViewedPosts };
         if (viewedPosts === 1) {
           saveData.lastResetTime = Date.now();
           saveData.todayDate = today;

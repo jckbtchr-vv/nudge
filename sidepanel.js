@@ -1,59 +1,21 @@
-// Auto-update interval for charts
-let chartUpdateInterval = null;
-let isHistoryView = false;
-
-// View toggle
-document.getElementById('historyToggle').addEventListener('click', () => {
-  isHistoryView = !isHistoryView;
-
-  if (isHistoryView) {
-    // Show history
-    document.getElementById('statsTab').classList.remove('active');
-    document.getElementById('historyTab').classList.add('active');
-    document.getElementById('historyToggle').textContent = 'Stats';
-
-    // Load and auto-update history
-    loadHistory();
-    chartUpdateInterval = setInterval(() => {
-      loadMinuteChart();
-      loadHourlyChart();
-      loadComparisonStats();
-      loadDailyChart();
-    }, 5000);
-  } else {
-    // Show stats
-    document.getElementById('statsTab').classList.add('active');
-    document.getElementById('historyTab').classList.remove('active');
-    document.getElementById('historyToggle').textContent = 'History';
-
-    // Clear interval
-    if (chartUpdateInterval) {
-      clearInterval(chartUpdateInterval);
-      chartUpdateInterval = null;
-    }
-  }
-});
+// Side panel - single scrollable view of all stats and history
 
 // Load current stats
 function loadStats() {
   chrome.storage.local.get(['viewedPosts', 'pixelsScrolled', 'threshold', 'mode'], (result) => {
-    console.log('Loading stats:', result);
     document.getElementById('viewedCount').textContent = result.viewedPosts || 0;
 
-    // Format pixels (e.g., 1234 -> 1.2k)
     const pixels = result.pixelsScrolled || 0;
     const pixelsFormatted = pixels >= 1000
       ? (pixels / 1000).toFixed(1) + 'k'
       : pixels.toString();
     document.getElementById('pixelsCount').textContent = pixelsFormatted;
 
-    // Only update threshold if input is not focused (prevents overwriting while typing)
     const thresholdInput = document.getElementById('threshold');
     if (document.activeElement !== thresholdInput) {
       thresholdInput.value = result.threshold || 100;
     }
 
-    // Update mode buttons
     const currentMode = result.mode || 'nudge';
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mode === currentMode);
@@ -61,14 +23,13 @@ function loadStats() {
   });
 }
 
-// Load minute chart (last 60 minutes) - line graph
+// Load minute chart (copied from popup.js)
 function loadMinuteChart() {
   chrome.storage.local.get(['minuteData'], (result) => {
     const minuteData = result.minuteData || {};
     const now = new Date();
     const data = [];
 
-    // Generate last 60 minutes
     for (let i = 59; i >= 0; i--) {
       const time = new Date(now.getTime() - (i * 60 * 1000));
       const today = time.toISOString().split('T')[0];
@@ -80,28 +41,23 @@ function loadMinuteChart() {
       data.push(count);
     }
 
-    // Create SVG line graph
-    const width = 288; // Adjust based on container
+    const width = 288;
     const height = 60;
     const maxCount = Math.max(...data, 1);
     const padding = 2;
 
-    // Calculate points for the line
     const points = data.map((count, index) => {
       const x = (index / (data.length - 1)) * width;
       const y = height - ((count / maxCount) * (height - padding * 2)) - padding;
       return { x, y, count };
     });
 
-    // Create SVG path
     const linePath = points.map((p, i) =>
       `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`
     ).join(' ');
 
-    // Create filled area path
     const fillPath = `M 0 ${height} L ${points.map(p => `${p.x} ${p.y}`).join(' L ')} L ${width} ${height} Z`;
 
-    // Create dots
     const dots = points
       .map((p, i) => p.count > 0 ? `<circle cx="${p.x}" cy="${p.y}" r="2" class="line-dot"><title>${p.count} tweets</title></circle>` : '')
       .join('');
@@ -118,7 +74,7 @@ function loadMinuteChart() {
   });
 }
 
-// Load hourly chart
+// Load hourly chart (copied from popup.js)
 function loadHourlyChart() {
   chrome.storage.local.get(['hourlyData', 'todayDate'], (result) => {
     const today = new Date().toISOString().split('T')[0];
@@ -126,7 +82,6 @@ function loadHourlyChart() {
     const hourlyData = result.hourlyData || {};
     const todayData = hourlyData[today] || {};
 
-    // Find first hour with data
     let firstHour = 0;
     for (let h = 0; h < 24; h++) {
       const hour = h.toString().padStart(2, '0');
@@ -139,7 +94,6 @@ function loadHourlyChart() {
     const maxTweets = Math.max(...Object.values(todayData), 1);
     const chartHtml = [];
 
-    // Only show hours from first data to current hour
     for (let h = firstHour; h <= currentHour; h++) {
       const hour = h.toString().padStart(2, '0');
       const count = todayData[hour] || 0;
@@ -157,7 +111,7 @@ function loadHourlyChart() {
   });
 }
 
-// Load comparison stats
+// Load comparison stats (copied from popup.js)
 function loadComparisonStats() {
   chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
     const history = result.history || [];
@@ -170,7 +124,6 @@ function loadComparisonStats() {
       return;
     }
 
-    // Today vs Yesterday
     const yesterday = history[history.length - 1];
     if (yesterday) {
       const diff = todayCount - yesterday.tweets;
@@ -184,7 +137,6 @@ function loadComparisonStats() {
       `;
     }
 
-    // 7-Day Average
     const last7Days = history.slice(-7);
     const avg7 = last7Days.length > 0
       ? Math.round(last7Days.reduce((sum, day) => sum + day.tweets, 0) / last7Days.length)
@@ -198,7 +150,6 @@ function loadComparisonStats() {
       <span class="delta ${deltaClass7}">${deltaSign7}${diff7}</span>
     `;
 
-    // 30-Day Average
     const last30Days = history.slice(-30);
     const avg30 = last30Days.length > 0
       ? Math.round(last30Days.reduce((sum, day) => sum + day.tweets, 0) / last30Days.length)
@@ -214,13 +165,12 @@ function loadComparisonStats() {
   });
 }
 
-// Load 30-day trend chart
+// Load daily chart (copied from popup.js)
 function loadDailyChart() {
   chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
     const history = result.history || [];
     const todayCount = result.viewedPosts || 0;
 
-    // Get last 30 days including today
     const last30Days = history.slice(-30);
     const allDays = [...last30Days, { date: new Date().toISOString().split('T')[0], tweets: todayCount }];
 
@@ -256,22 +206,19 @@ function loadDailyChart() {
   });
 }
 
-// Load heat map calendar (last 4 weeks)
+// Load heatmap (copied from popup.js)
 function loadHeatmap() {
   chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
     const history = result.history || [];
     const todayCount = result.viewedPosts || 0;
 
-    // Get last 28 days (4 weeks) including today
     const last28Days = history.slice(-27);
     const allDays = [...last28Days, { date: new Date().toISOString().split('T')[0], tweets: todayCount }];
 
-    // Pad to 28 days if needed
     while (allDays.length < 28) {
       allDays.unshift({ date: '', tweets: 0 });
     }
 
-    // Calculate max for intensity
     const maxTweets = Math.max(...allDays.map(d => d.tweets), 1);
 
     const heatmapHtml = allDays.map((day, index) => {
@@ -300,11 +247,10 @@ function loadHeatmap() {
   });
 }
 
-// Generate sparkline SVG for last 7 days
+// Generate sparkline (copied from popup.js)
 function generateSparkline(history, currentIndex) {
   const data = [];
 
-  // Get 7 days of data leading up to current day
   for (let i = 6; i >= 0; i--) {
     const index = currentIndex - i;
     data.push(index >= 0 ? history[index].tweets : 0);
@@ -334,7 +280,7 @@ function generateSparkline(history, currentIndex) {
   `;
 }
 
-// Load enhanced history
+// Load history (copied from popup.js)
 function loadHistory() {
   loadMinuteChart();
   loadHourlyChart();
@@ -351,7 +297,6 @@ function loadHistory() {
       return;
     }
 
-    // Show most recent first
     const recentHistory = history.slice().reverse();
 
     historyList.innerHTML = recentHistory.map((day, reverseIndex) => {
@@ -369,7 +314,6 @@ function loadHistory() {
         ? (day.pixels / 1000).toFixed(1) + 'k'
         : day.pixels;
 
-      // Calculate deltas
       let tweetsDelta = '';
       let pixelsDelta = '';
 
@@ -394,7 +338,6 @@ function loadHistory() {
         }
       }
 
-      // Generate sparkline
       const sparkline = originalIndex >= 6 ? generateSparkline(history, originalIndex) : '';
 
       return `
@@ -433,11 +376,9 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
 
-    // Update active state
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // Save and reload X tabs
     chrome.storage.local.set({ mode }, () => {
       chrome.tabs.query({ url: ['https://twitter.com/*', 'https://x.com/*'] }, (tabs) => {
         tabs.forEach(tab => {
@@ -462,19 +403,27 @@ document.getElementById('saveBtn').addEventListener('click', () => {
   });
 });
 
-// Load stats on popup open
-loadStats();
-
-// Update stats every second while popup is open
-setInterval(loadStats, 1000);
-
-// Open side panel button
-document.getElementById('openSidePanelBtn').addEventListener('click', async () => {
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    await chrome.sidePanel.open({ windowId: tab.windowId });
-  } catch (error) {
-    console.error('Error opening side panel:', error);
+// Listen for storage changes and update everything
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local') {
+    loadStats();
+    loadMinuteChart();
+    loadHourlyChart();
+    loadComparisonStats();
+    loadDailyChart();
+    loadHeatmap();
   }
 });
 
+// Initial load - load everything
+loadStats();
+loadHistory();
+
+// Auto-update stats and charts
+setInterval(() => {
+  loadStats();
+  loadMinuteChart();
+  loadHourlyChart();
+  loadComparisonStats();
+  loadDailyChart();
+}, 5000);

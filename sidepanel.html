@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Nudge</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Nudge</h1>
+  </div>
+
+  <!-- Today's Stats -->
+  <div class="stat-row">
+    <div class="stat-small">
+      <div class="stat-label">Posts Read</div>
+      <div class="stat-value-small" id="viewedCount">0</div>
+    </div>
+    <div class="stat-small">
+      <div class="stat-label">PX Scrolled</div>
+      <div class="stat-value-small" id="pixelsCount">0</div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings-section">
+    <div class="setting">
+      <label for="threshold">Limit</label>
+      <div class="limit-input-group">
+        <input type="number" id="threshold" min="1" max="1000" value="100">
+        <button id="saveBtn" class="inline-save">Save</button>
+      </div>
+    </div>
+
+    <div class="setting">
+      <label>Mode</label>
+      <div class="mode-buttons">
+        <button type="button" class="mode-btn active" data-mode="nudge">Nudge</button>
+        <button type="button" class="mode-btn" data-mode="count">Count</button>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- Last Hour -->
+  <div class="minute-chart-container">
+    <div class="stat-label" style="margin-bottom: 12px;">Last Hour</div>
+    <div id="minuteChart"></div>
+  </div>
+
+  <!-- Today's Activity -->
+  <div class="hourly-chart-container">
+    <div class="stat-label" style="margin-bottom: 12px;">Today's Activity</div>
+    <div id="hourlyChart"></div>
+  </div>
+
+  <!-- Comparison Stats -->
+  <div class="stat-label" style="margin: 24px 0 12px 0;">Comparison</div>
+  <div class="comparison-container">
+    <div class="comparison-stat">
+      <div class="comparison-label">Today vs Yesterday</div>
+      <div class="comparison-value" id="dailyComparison">-</div>
+    </div>
+    <div class="comparison-stat">
+      <div class="comparison-label">7-Day Average</div>
+      <div class="comparison-value" id="weeklyAverage">-</div>
+    </div>
+    <div class="comparison-stat">
+      <div class="comparison-label">30-Day Average</div>
+      <div class="comparison-value" id="monthlyAverage">-</div>
+    </div>
+  </div>
+
+  <!-- 30-Day Trend -->
+  <div class="stat-label" style="margin: 24px 0 12px 0;">30-Day Trend</div>
+  <div class="daily-chart-container">
+    <div id="dailyChart"></div>
+  </div>
+
+  <!-- Weekly Patterns -->
+  <div class="stat-label" style="margin: 24px 0 12px 0;">Weekly Patterns</div>
+  <div class="heatmap-container">
+    <div id="heatmapChart"></div>
+  </div>
+
+  <!-- Daily History -->
+  <div class="stat-label" style="margin: 24px 0 12px 0;">Daily History</div>
+  <div id="historyList"></div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
