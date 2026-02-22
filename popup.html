@@ -373,6 +373,237 @@
     .footer a:hover {
       color: #ffffff;
     }
+
+    /* Comparison Stats */
+    .comparison-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .comparison-stat {
+      flex: 1;
+      background: #111111;
+      border: 1px solid #333333;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .comparison-label {
+      font-size: 9px;
+      color: #666666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .comparison-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .comparison-value .delta {
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .comparison-value .delta.positive {
+      color: #ff4444;
+    }
+
+    .comparison-value .delta.negative {
+      color: #00aa00;
+    }
+
+    /* Daily Trend Chart */
+    .daily-chart-container {
+      background: #111111;
+      padding: 16px;
+      border: 1px solid #333333;
+      margin-bottom: 20px;
+    }
+
+    #dailyChart {
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      overflow-x: auto;
+    }
+
+    .daily-bar-wrapper {
+      flex: 0 0 8px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: stretch;
+    }
+
+    .daily-bar {
+      width: 100%;
+      background: #333333;
+      min-height: 2px;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .daily-bar:hover {
+      background: #ffffff;
+    }
+
+    .daily-bar.today {
+      background: #ffffff;
+    }
+
+    .daily-bar.weekend {
+      opacity: 0.5;
+    }
+
+    /* Heat Map */
+    .heatmap-container {
+      background: #111111;
+      padding: 16px;
+      border: 1px solid #333333;
+      margin-bottom: 20px;
+    }
+
+    #heatmapChart {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .heatmap-day {
+      aspect-ratio: 1;
+      background: #1a1a1a;
+      border: 1px solid #222222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .heatmap-day:hover {
+      border-color: #666666;
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    .heatmap-day-label {
+      color: #666666;
+      font-size: 8px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .heatmap-day-value {
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .heatmap-day.intensity-0 { background: #1a1a1a; }
+    .heatmap-day.intensity-1 { background: #2a2a1a; }
+    .heatmap-day.intensity-2 { background: #3a3a1a; }
+    .heatmap-day.intensity-3 { background: #4a4a1a; }
+    .heatmap-day.intensity-4 { background: #5a5a1a; }
+    .heatmap-day.intensity-5 { background: #6a6a1a; }
+
+    /* Enhanced History Items */
+    .history-item {
+      padding: 16px 12px;
+      border-bottom: 1px solid #222222;
+      font-size: 11px;
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .history-date {
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 10px;
+    }
+
+    .history-day-name {
+      color: #666666;
+      font-size: 9px;
+      margin-left: 8px;
+    }
+
+    .history-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .history-metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .history-metric-label {
+      color: #666666;
+      font-size: 9px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .history-metric-value {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-delta {
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 2px;
+      background: #1a1a1a;
+    }
+
+    .history-delta.positive {
+      color: #ff4444;
+    }
+
+    .history-delta.negative {
+      color: #00aa00;
+    }
+
+    .history-sparkline {
+      height: 20px;
+      margin-top: 6px;
+    }
+
+    .history-sparkline svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sparkline-path {
+      fill: none;
+      stroke: #666666;
+      stroke-width: 1;
+    }
+
+    .sparkline-dot {
+      fill: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -425,6 +656,36 @@
       <div id="hourlyChart"></div>
     </div>
 
+    <!-- Comparison Stats -->
+    <div class="stat-label" style="margin: 24px 0 12px 0;">Comparison</div>
+    <div class="comparison-container">
+      <div class="comparison-stat">
+        <div class="comparison-label">Today vs Yesterday</div>
+        <div class="comparison-value" id="dailyComparison">-</div>
+      </div>
+      <div class="comparison-stat">
+        <div class="comparison-label">7-Day Average</div>
+        <div class="comparison-value" id="weeklyAverage">-</div>
+      </div>
+      <div class="comparison-stat">
+        <div class="comparison-label">30-Day Average</div>
+        <div class="comparison-value" id="monthlyAverage">-</div>
+      </div>
+    </div>
+
+    <!-- 30-Day Trend Chart -->
+    <div class="stat-label" style="margin: 24px 0 12px 0;">30-Day Trend</div>
+    <div class="daily-chart-container">
+      <div id="dailyChart"></div>
+    </div>
+
+    <!-- Heat Map Calendar -->
+    <div class="stat-label" style="margin: 24px 0 12px 0;">Weekly Patterns</div>
+    <div class="heatmap-container">
+      <div id="heatmapChart"></div>
+    </div>
+
+    <!-- Daily History List with Enhanced Details -->
     <div class="stat-label" style="margin: 24px 0 12px 0;">Daily History</div>
     <div id="historyList"></div>
   </div>

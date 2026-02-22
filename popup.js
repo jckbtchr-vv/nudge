@@ -17,6 +17,8 @@ document.getElementById('historyToggle').addEventListener('click', () => {
     chartUpdateInterval = setInterval(() => {
       loadMinuteChart();
       loadHourlyChart();
+      loadComparisonStats();
+      loadDailyChart();
     }, 5000);
   } else {
     // Show stats
@@ -155,10 +157,190 @@ function loadHourlyChart() {
   });
 }
 
-// Load history
+// Load comparison stats
+function loadComparisonStats() {
+  chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
+    const history = result.history || [];
+    const todayCount = result.viewedPosts || 0;
+
+    if (history.length === 0) {
+      document.getElementById('dailyComparison').innerHTML = '-';
+      document.getElementById('weeklyAverage').innerHTML = '-';
+      document.getElementById('monthlyAverage').innerHTML = '-';
+      return;
+    }
+
+    // Today vs Yesterday
+    const yesterday = history[history.length - 1];
+    if (yesterday) {
+      const diff = todayCount - yesterday.tweets;
+      const diffPercent = yesterday.tweets > 0 ? ((diff / yesterday.tweets) * 100).toFixed(0) : 0;
+      const deltaClass = diff > 0 ? 'positive' : diff < 0 ? 'negative' : '';
+      const deltaSign = diff > 0 ? '+' : '';
+
+      document.getElementById('dailyComparison').innerHTML = `
+        ${todayCount}
+        <span class="delta ${deltaClass}">${deltaSign}${diffPercent}%</span>
+      `;
+    }
+
+    // 7-Day Average
+    const last7Days = history.slice(-7);
+    const avg7 = last7Days.length > 0
+      ? Math.round(last7Days.reduce((sum, day) => sum + day.tweets, 0) / last7Days.length)
+      : 0;
+    const diff7 = todayCount - avg7;
+    const deltaClass7 = diff7 > 0 ? 'positive' : diff7 < 0 ? 'negative' : '';
+    const deltaSign7 = diff7 > 0 ? '+' : '';
+
+    document.getElementById('weeklyAverage').innerHTML = `
+      ${avg7}
+      <span class="delta ${deltaClass7}">${deltaSign7}${diff7}</span>
+    `;
+
+    // 30-Day Average
+    const last30Days = history.slice(-30);
+    const avg30 = last30Days.length > 0
+      ? Math.round(last30Days.reduce((sum, day) => sum + day.tweets, 0) / last30Days.length)
+      : 0;
+    const diff30 = todayCount - avg30;
+    const deltaClass30 = diff30 > 0 ? 'positive' : diff30 < 0 ? 'negative' : '';
+    const deltaSign30 = diff30 > 0 ? '+' : '';
+
+    document.getElementById('monthlyAverage').innerHTML = `
+      ${avg30}
+      <span class="delta ${deltaClass30}">${deltaSign30}${diff30}</span>
+    `;
+  });
+}
+
+// Load 30-day trend chart
+function loadDailyChart() {
+  chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
+    const history = result.history || [];
+    const todayCount = result.viewedPosts || 0;
+
+    // Get last 30 days including today
+    const last30Days = history.slice(-30);
+    const allDays = [...last30Days, { date: new Date().toISOString().split('T')[0], tweets: todayCount }];
+
+    if (allDays.length === 0) {
+      document.getElementById('dailyChart').innerHTML = '<div class="empty-history">NO DATA YET</div>';
+      return;
+    }
+
+    const maxTweets = Math.max(...allDays.map(d => d.tweets), 1);
+    const today = new Date().toISOString().split('T')[0];
+
+    const chartHtml = allDays.map(day => {
+      const height = (day.tweets / maxTweets) * 100;
+      const isToday = day.date === today;
+      const dayOfWeek = new Date(day.date).getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+      const dateLabel = new Date(day.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+
+      return `
+        <div class="daily-bar-wrapper">
+          <div class="daily-bar ${isToday ? 'today' : ''} ${isWeekend ? 'weekend' : ''}"
+               style="height: ${height}%"
+               title="${dateLabel}: ${day.tweets} tweets"></div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('dailyChart').innerHTML = chartHtml;
+  });
+}
+
+// Load heat map calendar (last 4 weeks)
+function loadHeatmap() {
+  chrome.storage.local.get(['history', 'viewedPosts'], (result) => {
+    const history = result.history || [];
+    const todayCount = result.viewedPosts || 0;
+
+    // Get last 28 days (4 weeks) including today
+    const last28Days = history.slice(-27);
+    const allDays = [...last28Days, { date: new Date().toISOString().split('T')[0], tweets: todayCount }];
+
+    // Pad to 28 days if needed
+    while (allDays.length < 28) {
+      allDays.unshift({ date: '', tweets: 0 });
+    }
+
+    // Calculate max for intensity
+    const maxTweets = Math.max(...allDays.map(d => d.tweets), 1);
+
+    const heatmapHtml = allDays.map((day, index) => {
+      const intensity = day.tweets > 0 ? Math.min(5, Math.ceil((day.tweets / maxTweets) * 5)) : 0;
+
+      if (!day.date) {
+        return '<div class="heatmap-day" style="opacity: 0.3;"></div>';
+      }
+
+      const dayOfWeek = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 1);
+      const dayNum = new Date(day.date).getDate();
+      const dateLabel = new Date(day.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+
+      return `
+        <div class="heatmap-day intensity-${intensity}" title="${dateLabel}: ${day.tweets} tweets">
+          <div class="heatmap-day-label">${dayOfWeek}</div>
+          <div class="heatmap-day-value">${dayNum}</div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('heatmapChart').innerHTML = heatmapHtml;
+  });
+}
+
+// Generate sparkline SVG for last 7 days
+function generateSparkline(history, currentIndex) {
+  const data = [];
+
+  // Get 7 days of data leading up to current day
+  for (let i = 6; i >= 0; i--) {
+    const index = currentIndex - i;
+    data.push(index >= 0 ? history[index].tweets : 0);
+  }
+
+  const max = Math.max(...data, 1);
+  const width = 60;
+  const height = 20;
+
+  const points = data.map((value, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((value / max) * height);
+    return { x, y, value };
+  });
+
+  const path = points.map((p, i) =>
+    `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`
+  ).join(' ');
+
+  const lastPoint = points[points.length - 1];
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}">
+      <path d="${path}" class="sparkline-path"/>
+      <circle cx="${lastPoint.x}" cy="${lastPoint.y}" r="1.5" class="sparkline-dot"/>
+    </svg>
+  `;
+}
+
+// Load enhanced history
 function loadHistory() {
   loadMinuteChart();
   loadHourlyChart();
+  loadComparisonStats();
+  loadDailyChart();
+  loadHeatmap();
 
   chrome.storage.local.get(['history'], (result) => {
     const history = result.history || [];
@@ -172,23 +354,74 @@ function loadHistory() {
     // Show most recent first
     const recentHistory = history.slice().reverse();
 
-    historyList.innerHTML = recentHistory.map(day => {
-      const date = new Date(day.date).toLocaleDateString('en-US', {
-        weekday: 'short',
+    historyList.innerHTML = recentHistory.map((day, reverseIndex) => {
+      const originalIndex = history.length - 1 - reverseIndex;
+
+      const date = new Date(day.date);
+      const dateFormatted = date.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        year: 'numeric'
       });
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+
       const pixelsFormatted = day.pixels >= 1000
         ? (day.pixels / 1000).toFixed(1) + 'k'
         : day.pixels;
 
+      // Calculate deltas
+      let tweetsDelta = '';
+      let pixelsDelta = '';
+
+      if (originalIndex > 0) {
+        const prevDay = history[originalIndex - 1];
+        const tweetsDiff = day.tweets - prevDay.tweets;
+        const pixelsDiff = day.pixels - prevDay.pixels;
+
+        if (tweetsDiff !== 0) {
+          const tweetsDeltaClass = tweetsDiff > 0 ? 'positive' : 'negative';
+          const tweetsDeltaSign = tweetsDiff > 0 ? '+' : '';
+          tweetsDelta = `<span class="history-delta ${tweetsDeltaClass}">${tweetsDeltaSign}${tweetsDiff}</span>`;
+        }
+
+        if (pixelsDiff !== 0) {
+          const pixelsDeltaClass = pixelsDiff > 0 ? 'positive' : 'negative';
+          const pixelsDeltaSign = pixelsDiff > 0 ? '+' : '';
+          const pixelsDiffFormatted = Math.abs(pixelsDiff) >= 1000
+            ? (pixelsDiff / 1000).toFixed(1) + 'k'
+            : pixelsDiff;
+          pixelsDelta = `<span class="history-delta ${pixelsDeltaClass}">${pixelsDeltaSign}${pixelsDiffFormatted}</span>`;
+        }
+      }
+
+      // Generate sparkline
+      const sparkline = originalIndex >= 6 ? generateSparkline(history, originalIndex) : '';
+
       return `
         <div class="history-item">
-          <div class="history-date">${date}</div>
-          <div class="history-stats">
-            <span>${day.tweets} tweets</span>
-            <span>${pixelsFormatted} px</span>
+          <div class="history-item-header">
+            <div>
+              <span class="history-date">${dateFormatted}</span>
+              <span class="history-day-name">${dayName}</span>
+            </div>
           </div>
+          <div class="history-metrics">
+            <div class="history-metric">
+              <div class="history-metric-label">Posts Read</div>
+              <div class="history-metric-value">
+                ${day.tweets}
+                ${tweetsDelta}
+              </div>
+            </div>
+            <div class="history-metric">
+              <div class="history-metric-label">PX Scrolled</div>
+              <div class="history-metric-value">
+                ${pixelsFormatted}
+                ${pixelsDelta}
+              </div>
+            </div>
+          </div>
+          ${sparkline ? `<div class="history-sparkline">${sparkline}</div>` : ''}
         </div>
       `;
     }).join('');
